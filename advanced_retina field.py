@@ -1,6 +1,3 @@
-
-
-
 from skimage.data import retina
 from skimage.color import rgb2gray
 from skimage.transform import rescale
