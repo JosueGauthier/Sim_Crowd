@@ -10,6 +10,7 @@ image = imread('_static/maze.png', as_gray=True).astype(np.float_)
 speed_image = rescale_intensity(image, out_range=(0.005, 1.0))
 
 start_point = (60, 238)
+#print(start_point[0])
 end_point = (621, 728)
 
 with parameters(ode_solver_method=OdeSolverMethod.LSODA, integrate_max_step=1.0):
@@ -87,7 +88,13 @@ class Particle:
     def advance(self, dt):
         """Advance the Particle's position forward in time by dt."""
 
-        self.r += self.v * dt
+        #self.r += self.v * dt
+        b = self.v * dt
+        a = self.r
+
+        np.add(a, b, out=a, casting="unsafe")
+
+ 
 
 class Simulation:
     """A class for a simple hard-circle molecular dynamics simulation.
@@ -115,10 +122,10 @@ class Simulation:
     def place_particle(self, rad, styles):
         # Choose x, y so that the Particle is entirely inside the
         # domain of the simulation.
-        x, y = rad + (1 - 2*rad) * np.random.random(2)
+        #x, y = rad + (1 - 2*rad) * np.random.random(2)
 
-        x= 0.5
-        y= 0.7
+        x= start_point[0]
+        y= start_point[1]
         # Choose a random velocity (within some reasonable range of
         # values) for the Particle.
         
@@ -127,11 +134,15 @@ class Simulation:
         vphi = 2*np.pi * np.random.random()
         vx, vy = vr * np.cos(vphi), vr * np.sin(vphi)
         """
-        vx = 10
-        vy = 10 
+        vx = 50
+        vy = 50
         particle = self.ParticleClass(x, y, vx, vy, rad, styles)
+       
+       
         # Check that the Particle doesn't overlap one that's already
         # been placed.
+
+
         for p2 in self.particles:
             if p2.overlaps(particle):
                 break
