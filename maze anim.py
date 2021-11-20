@@ -36,10 +36,13 @@ class Particle:
 
         """
 
+        #self.r = np.array((x, y))
+        
         self.r = np.array((x, y))
         self.v = np.array((vx, vy))
         self.radius = radius
         self.mass = self.radius**2
+        self.compteur = 0
 
         self.styles = styles
         if not self.styles:
@@ -87,12 +90,22 @@ class Particle:
 
     def advance(self, dt):
         """Advance the Particle's position forward in time by dt."""
-
+     
         #self.r += self.v * dt
-        b = self.v * dt
-        a = self.r
+        b = self.v *dt
 
+        
+        a = self.r
+        print(a)
         np.add(a, b, out=a, casting="unsafe")
+
+        
+
+        #self.compteur = self.compteur+1
+
+        #a = path[self.compteur]
+        #print(a)
+        #print(self.compteur)
 
  
 
@@ -135,14 +148,10 @@ class Simulation:
         vx, vy = vr * np.cos(vphi), vr * np.sin(vphi)
         """
         vx = 50
-        vy = 50
+        vy = 100
         particle = self.ParticleClass(x, y, vx, vy, rad, styles)
-       
-       
         # Check that the Particle doesn't overlap one that's already
         # been placed.
-
-
         for p2 in self.particles:
             if p2.overlaps(particle):
                 break
@@ -234,11 +243,23 @@ class Simulation:
         """Advance the animation by dt, returning the updated Circles list."""
 
         for i, p in enumerate(self.particles):
-            p.advance(self.dt)
-            self.handle_boundary_collisions(p)
+            #p.advance(self.dt)
+            print(i)
+            #print(p)
+            print(list(enumerate(self.particles)))
+
+            """
+            self.compteur = self.compteur+1
+
+            a = path[self.compteur]
+            print(a)
+            """
+
+
+            #self.handle_boundary_collisions(p)
             self.circles[i].center = p.r
-        self.handle_collisions()
-        self.apply_forces()
+        #self.handle_collisions()
+        #self.apply_forces()
         return self.circles
 
     def advance(self):
@@ -289,7 +310,7 @@ class Simulation:
 
         self.setup_animation()
         anim = animation.FuncAnimation(self.fig, self.animate,
-                init_func=self.init, frames=1000, interval=interval, blit=True)
+                init_func=self.init, frames=3, interval=interval, blit=True)
         self.save_or_show_animation(anim, save, filename)
 
 

@@ -16,6 +16,6 @@ with parameters(ode_solver_method=OdeSolverMethod.LSODA, integrate_max_step=1.0)
     path_info = mpe(speed_image, start_point, end_point)
 
 path = path_info.path
-print(path[0,0])
+print(path[0])
 
-print(path[:])
+
