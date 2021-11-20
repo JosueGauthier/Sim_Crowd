@@ -180,14 +180,14 @@ class Simulation:
         if p.x - p.radius < 0:
             p.x = p.radius
             p.vx = -p.vx
-        if p.x + p.radius > 1:
-            p.x = 1-p.radius
+        if p.x + p.radius > globalxlim:
+            p.x = globalxlim-p.radius
             p.vx = -p.vx
         if p.y - p.radius < 0:
             p.y = p.radius
             p.vy = -p.vy
-        if p.y + p.radius > 1:
-            p.y = 1-p.radius
+        if p.y + p.radius > globalylim:
+            p.y = globalylim-p.radius
             p.vy = -p.vy
 
     def apply_forces(self):
@@ -232,8 +232,8 @@ class Simulation:
         for s in ['top','bottom','left','right']:
             self.ax.spines[s].set_linewidth(2)
         self.ax.set_aspect('equal', 'box')
-        self.ax.set_xlim(0, 3)
-        self.ax.set_ylim(0, 3)
+        self.ax.set_xlim(0, globalxlim)
+        self.ax.set_ylim(0, globalylim)
         self.ax.xaxis.set_ticks([])
         self.ax.yaxis.set_ticks([])
 
@@ -258,6 +258,9 @@ class Simulation:
 
 
 if __name__ == '__main__':
+
+    globalxlim = 3
+    globalylim = 3
     nparticles = 1
     #radii = np.random.random(nparticles)*0.03+0.02 #particules de tailles random
     radii = 0.1

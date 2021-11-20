@@ -17,6 +17,7 @@ with parameters(ode_solver_method=OdeSolverMethod.LSODA, integrate_max_step=1.0)
 
 path = path_info.path
 
+
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.patches import Circle
@@ -87,7 +88,7 @@ class Particle:
         """Advance the Particle's position forward in time by dt."""
 
         self.r += self.v * dt
- 
+
 class Simulation:
     """A class for a simple hard-circle molecular dynamics simulation.
 
@@ -114,15 +115,20 @@ class Simulation:
     def place_particle(self, rad, styles):
         # Choose x, y so that the Particle is entirely inside the
         # domain of the simulation.
-        #x, y = rad + (1 - 2*rad) * np.random.random(2)
+        x, y = rad + (1 - 2*rad) * np.random.random(2)
 
-        x,y = 60,238
+        x= 0.5
+        y= 0.7
         # Choose a random velocity (within some reasonable range of
         # values) for the Particle.
-        #vr = 0.1 * np.sqrt(np.random.random()) + 0.05
-        #vphi = 2*np.pi * np.random.random()
-        #vx, vy = vr * np.cos(vphi), vr * np.sin(vphi)
-        vx,vy = 1,1
+        
+        """
+        vr = 0.1 * np.sqrt(np.random.random()) + 0.05
+        vphi = 2*np.pi * np.random.random()
+        vx, vy = vr * np.cos(vphi), vr * np.sin(vphi)
+        """
+        vx = 10
+        vy = 10 
         particle = self.ParticleClass(x, y, vx, vy, rad, styles)
         # Check that the Particle doesn't overlap one that's already
         # been placed.
@@ -199,14 +205,14 @@ class Simulation:
         if p.x - p.radius < 0:
             p.x = p.radius
             p.vx = -p.vx
-        if p.x + p.radius > 1:
-            p.x = 1-p.radius
+        if p.x + p.radius > globalxlim:
+            p.x = globalxlim-p.radius
             p.vx = -p.vx
         if p.y - p.radius < 0:
             p.y = p.radius
             p.vy = -p.vy
-        if p.y + p.radius > 1:
-            p.y = 1-p.radius
+        if p.y + p.radius > globalylim:
+            p.y = globalylim-p.radius
             p.vy = -p.vy
 
     def apply_forces(self):
@@ -251,8 +257,8 @@ class Simulation:
         for s in ['top','bottom','left','right']:
             self.ax.spines[s].set_linewidth(2)
         self.ax.set_aspect('equal', 'box')
-        self.ax.set_xlim(0, 500)
-        self.ax.set_ylim(0, 500)
+        self.ax.set_xlim(0, globalxlim)
+        self.ax.set_ylim(0, globalylim)
         self.ax.xaxis.set_ticks([])
         self.ax.yaxis.set_ticks([])
 
@@ -277,15 +283,15 @@ class Simulation:
 
 
 if __name__ == '__main__':
+
+    globalxlim = 500
+    globalylim = 500
     nparticles = 1
     #radii = np.random.random(nparticles)*0.03+0.02 #particules de tailles random
-    radii = 1
+    radii = 10
     styles = {'edgecolor': 'red','facecolor': 'red', 'linewidth': 0, 'fill':True }
     sim = Simulation(nparticles, radii, styles)
     sim.do_animation(save=False)
-
-
-
 
 """
 plt.imshow(image, cmap='gray')
