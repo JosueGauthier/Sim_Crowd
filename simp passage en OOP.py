@@ -28,14 +28,30 @@ class Simulation:
         with parameters(ode_solver_method=OdeSolverMethod.LSODA, integrate_max_step=1.0):
             path_info = mpe(speed_image, start_point, end_point)
         return path_info.path
-    
+
+    def creation_plot(self,speed_image,start_point,end_point):
+
+        fig = plt.figure(figsize=(8,6), dpi=150)
+        plt.imshow(image, cmap='gray')
+        pathCP = self.calc_chemin(speed_image,start_point,end_point)
+        plt.plot(pathCP[:, 1], pathCP[:, 0], '-r', linewidth=1)
+
+        plt.plot(*start_point[::-1], 'oy')
+        plt.plot(*end_point[::-1], 'og')
+
+
+        ylim(0,800)
+        xlim(0,800)
+        grid()
+
+        plt.show()
 
     def __init__(self, n):
         """Initialize the simulation with n Particles.
         """
         pass
-    
-        """
+        
+        """    
         fig = plt.figure(figsize=(8,6), dpi=150)
         plt.imshow(image, cmap='gray')
         plt.plot(path[:, 1], path[:, 0], '-r', linewidth=1)
@@ -55,6 +71,7 @@ class Simulation:
     def do_animation(self):
 
         pass 
+        self.creation_plot(speed_image,start_point,end_point)
         """Set up and carry out the animation.
         """
         """
@@ -77,7 +94,8 @@ if __name__ == '__main__':
     a=sim.calc_chemin(speed_image,start_point,end_point)
 
     print(a)
-    #sim.do_animation()
+
+    sim.do_animation()
 
 
 
