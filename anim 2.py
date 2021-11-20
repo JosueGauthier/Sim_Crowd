@@ -54,13 +54,22 @@ ax.spines['bottom'].set_position(('data',0))
 ax.yaxis.set_ticks_position('left')
 ax.spines['left'].set_position(('data',0))
 
-def run(i):
-        x0 = path[i][1]
-        y0 = path[i][0]
-        ax.scatter(x0, y0, 10, color='blue')
 
-ani = FuncAnimation(fig = fig, func = run, frames = 500, interval = 10, repeat = False)
+# create a point in the axes
+point, = ax.plot(0,1, marker="o")
+
+# Updating function, to be repeatedly called by the animation
+def update(i):
+    # obtain point coordinates 
+    x = path[i][1]
+    y = path[i][0]
+    # set point's coordinates
+    point.set_data([x],[y])
+    return point,
+
+# create animation with 10ms interval, which is repeated,
+# provide the full path
+ani = FuncAnimation(fig, update, interval=10, blit=True, repeat=True,frames=len(path))
+
+
 plt.show()
-
-
-
