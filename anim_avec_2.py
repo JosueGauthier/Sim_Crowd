@@ -30,7 +30,9 @@ path2 = path_info2.path
 
 
 
-fig = plt.figure(figsize=(8,6), dpi=150)
+#fig = plt.figure(figsize=(8,6), dpi=150)
+fig = plt.figure(dpi=150)
+
 plt.imshow(image, cmap='gray')
 plt.plot(path[:, 1], path[:, 0], '-r', linewidth=1)
 
