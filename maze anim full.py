@@ -1,13 +1,10 @@
 from skimage.io import imread
 from skimage.exposure import rescale_intensity
+
 from matplotlib import pyplot as plt
+
 import numpy as np 
 from skmpe import parameters, mpe, OdeSolverMethod
-
-
-from matplotlib.patches import Circle
-from matplotlib import animation
-from itertools import combinations
 
 image = imread('_static/maze.png', as_gray=True).astype(np.float_)
 speed_image = rescale_intensity(image, out_range=(0.005, 1.0))
@@ -22,6 +19,12 @@ with parameters(ode_solver_method=OdeSolverMethod.LSODA, integrate_max_step=1.0)
 path = path_info.path
 
 
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.patches import Circle
+from matplotlib import animation
+from itertools import combinations
+
 class Particle:
     """A class representing a two-dimensional particle."""
 
@@ -33,12 +36,13 @@ class Particle:
 
         """
 
+        #self.r = np.array((x, y))
         
         self.r = np.array((x, y))
         self.v = np.array((vx, vy))
         self.radius = radius
         self.mass = self.radius**2
-        #self.compteur = 0
+        self.compteur = 0
 
         self.styles = styles
         if not self.styles:
@@ -72,7 +76,11 @@ class Particle:
     def vy(self, value):
         self.v[1] = value
 
-    
+    def overlaps(self, other):
+        """Does the circle of this Particle overlap that of other?"""
+
+        return np.hypot(*(self.r - other.r)) < self.radius + other.radius
+
     def draw(self, ax):
         """Add this Particle's Circle patch to the Matplotlib Axes ax."""
 
@@ -85,7 +93,10 @@ class Particle:
      
         #self.r += self.v * dt
         b = self.v *dt
+
+        
         a = self.r
+        print(a)
         np.add(a, b, out=a, casting="unsafe")
 
         
@@ -138,7 +149,6 @@ class Simulation:
         """
         vx = 50
         vy = 100
-        
         particle = self.ParticleClass(x, y, vx, vy, rad, styles)
         # Check that the Particle doesn't overlap one that's already
         # been placed.
@@ -175,15 +185,68 @@ class Simulation:
             # Try to find a random initial position for this particle.
             while not self.place_particle(rad, styles):
                 pass
-   
+
+    def change_velocities(self, p1, p2):
+        """
+        Particles p1 and p2 have collided elastically: update their
+        velocities.
+
+        """
+        
+        m1, m2 = p1.mass, p2.mass
+        M = m1 + m2
+        r1, r2 = p1.r, p2.r
+        d = np.linalg.norm(r1 - r2)**2
+        v1, v2 = p1.v, p2.v
+        u1 = v1 - 2*m2 / M * np.dot(v1-v2, r1-r2) / d * (r1 - r2)
+        u2 = v2 - 2*m1 / M * np.dot(v2-v1, r2-r1) / d * (r2 - r1)
+        p1.v = u1
+        p2.v = u2
+
+    def handle_collisions(self):
+        """Detect and handle any collisions between the Particles.
+
+        When two Particles collide, they do so elastically: their velocities
+        change such that both energy and momentum are conserved.
+
+        """ 
+
+        # We're going to need a sequence of all of the pairs of particles when
+        # we are detecting collisions. combinations generates pairs of indexes
+        # into the self.particles list of Particles on the fly.
+        pairs = combinations(range(self.n), 2)
+        for i,j in pairs:
+            if self.particles[i].overlaps(self.particles[j]):
+                self.change_velocities(self.particles[i], self.particles[j])
+
+    def handle_boundary_collisions(self, p):
+        """Bounce the particles off the walls elastically."""
+
+        if p.x - p.radius < 0:
+            p.x = p.radius
+            p.vx = -p.vx
+        if p.x + p.radius > globalxlim:
+            p.x = globalxlim-p.radius
+            p.vx = -p.vx
+        if p.y - p.radius < 0:
+            p.y = p.radius
+            p.vy = -p.vy
+        if p.y + p.radius > globalylim:
+            p.y = globalylim-p.radius
+            p.vy = -p.vy
+
+    def apply_forces(self):
+        """Override this method to accelerate the particles."""
+        pass
 
     def advance_animation(self):
         """Advance the animation by dt, returning the updated Circles list."""
 
         for i, p in enumerate(self.particles):
-            
-            p.advance(self.dt)
-            print("aa")
+            #p.advance(self.dt)
+            print(i)
+            #print(p)
+            print(list(enumerate(self.particles)))
 
             """
             self.compteur = self.compteur+1
@@ -203,6 +266,9 @@ class Simulation:
         """Advance the animation by dt."""
         for i, p in enumerate(self.particles):
             p.advance(self.dt)
+            self.handle_boundary_collisions(p)
+        self.handle_collisions()
+        self.apply_forces()
 
     def init(self):
         """Initialize the Matplotlib animation."""
@@ -244,7 +310,7 @@ class Simulation:
 
         self.setup_animation()
         anim = animation.FuncAnimation(self.fig, self.animate,
-                init_func=self.init, frames=1, interval=interval, blit=True)
+                init_func=self.init, frames=3, interval=interval, blit=True)
         self.save_or_show_animation(anim, save, filename)
 
 
@@ -253,7 +319,21 @@ if __name__ == '__main__':
     globalxlim = 500
     globalylim = 500
     nparticles = 1
+    #radii = np.random.random(nparticles)*0.03+0.02 #particules de tailles random
     radii = 10
     styles = {'edgecolor': 'red','facecolor': 'red', 'linewidth': 0, 'fill':True }
     sim = Simulation(nparticles, radii, styles)
     sim.do_animation(save=False)
+
+"""
+plt.imshow(image, cmap='gray')
+plt.plot(path[:, 1], path[:, 0], '-r', linewidth=2)
+
+plt.plot(*start_point[::-1], 'oy')
+plt.plot(*end_point[::-1], 'og')
+
+plt.axis('off')
+
+plt.show()
+
+"""
