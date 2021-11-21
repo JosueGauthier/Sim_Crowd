@@ -9,7 +9,6 @@ from pylab import *
 from matplotlib.animation import FuncAnimation
 
 
-
 class Particle:
     pass
 
@@ -45,7 +44,6 @@ class Simulation:
 
         return fig,pathCP
 
-
     def moving_point(self,fig,path) :
 
         ax = gca()
@@ -53,9 +51,6 @@ class Simulation:
         point, = ax.plot(0,1, marker="o")
 
         return point
-
-
-
 
 
     def do_animation(self):
@@ -68,6 +63,8 @@ class Simulation:
         # Updating function, to be repeatedly called by the animation
         # create animation with 10ms interval, which is repeated,
         # provide the full path
+
+        print(self.nbparticules)
 
 
         def update(i):
@@ -87,10 +84,10 @@ class Simulation:
 
 
 
-    def __init__(self):
+    def __init__(self,nbparticules):
         """Initialize the simulation with n Particles.
         """
-        pass
+        self.nbparticules = nbparticules
 
 
     
@@ -107,6 +104,6 @@ if __name__ == '__main__':
     raddi = 10 #raddius of particle
     styles = {'edgecolor': 'red','facecolor': 'red', 'linewidth': 0, 'fill':True }
     
-    sim = Simulation()
+    sim = Simulation(nparticles)
 
     sim.do_animation()
