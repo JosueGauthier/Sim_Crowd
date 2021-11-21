@@ -11,11 +11,29 @@ from matplotlib.animation import FuncAnimation
 
 
 class Particle:
-    pass
+    """A class representing a two-dimensional particle."""
 
+    def __init__(self, x, y,path):
+        """Initialize the particle's position, velocity, and radius."""
+
+        self.coord = np.array((x, y))
+        self.path_p = path
+
+    @property
+    def x(self):
+        return self.coord[0]
+    @x.setter
+    def x(self, value):
+        self.coord[0] = value
+    @property
+    def y(self):
+        return self.coord[1]
+    @y.setter
+    def y(self, value):
+        self.coord[1] = value
+ 
 class Simulation:
-    """A class for a simulation of n people try to escape the maze.
-    """
+    """A class for a simulation of n people try to escape the maze/room/building"""
 
     ParticleClass = Particle
 
@@ -25,9 +43,7 @@ class Simulation:
             path_info = mpe(speed_image, start_point, end_point)
         return path_info.path
 
-    def creation_plot(self,image_brute,start,start_type,end_point):
-
-
+    def creation_plot(self,image_brute,start,start_type,end_point,nparticles):
 
         image = imr(image_brute, as_gray=True).astype(np.float_)
         speed_image = rescale_intensity(image, out_range=(0.005, 1.0))
@@ -35,23 +51,37 @@ class Simulation:
         fig = plt.figure(figsize=(8,6), dpi=150)
         plt.imshow(image, cmap='gray')
 
-        if start_type == "point":
-            start_point = start
+        particule=[]
 
+        for particule_i in range(nparticles):
 
-        if start_type =="zone":
-            abs = rd.randint(start[0][0],start[0][1])
-            ord = rd.randint(start[1][0],start[1][1])
-            start_point =(abs,ord)
+            if start_type == "point":
+                start_point = start
 
+            if start_type =="zone":
+                abs = rd.randint(start[0][0],start[0][1])
+                ord = rd.randint(start[1][0],start[1][1])
+                start_point =(abs,ord)
 
-        if start_type == "alea":
-            abs = rd.randint(0,800)
-            ord = rd.randint(0,800)
-            start_point =(abs,ord)
+            if start_type == "alea":
+                abs = rd.randint(0,800)
+                ord = rd.randint(0,800)
+                start_point =(abs,ord)
+            
+            pathCP = self.calc_chemin(speed_image,start_point,end_point)
+            p = Particle(start_point[0],start_point[1],pathCP)
+            particule.append(p)
+            
+        print(particule)
+        print(particule[0].path_p)
+            
 
 
         pathCP = self.calc_chemin(speed_image,start_point,end_point)
+
+
+
+
         plt.plot(pathCP[:, 1], pathCP[:, 0], '-r', linewidth=1)
 
         plt.plot(*start_point[::-1], 'oy')
@@ -77,14 +107,13 @@ class Simulation:
         """Set up and carry out the animation."""
 
         #set up anim
-        fig,path = self.creation_plot(image_brute,start,start_type,end_point)
+        fig,path = self.creation_plot(image_brute,start,start_type,end_point,nparticles)
         point = self.moving_point(fig,path)
 
         # Updating function, to be repeatedly called by the animation
         # create animation with 10ms interval, which is repeated,
         # provide the full path
 
-        print(self.nbparticules)
 
 
         def update(i):
