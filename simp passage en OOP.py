@@ -43,16 +43,34 @@ class Simulation:
         xlim(0,800)
         grid()
 
-        self.moving_point(fig,pathCP)
+        return fig,pathCP
+
 
     def moving_point(self,fig,path) :
-        
-        ax = gca()
 
+        ax = gca()
         # create a point in the axes
         point, = ax.plot(0,1, marker="o")
 
-        def update(i,path,point):
+        return point
+
+
+
+
+
+    def do_animation(self):
+        """Set up and carry out the animation."""
+
+        #set up anim
+        fig,path = self.creation_plot(image_brute,start_point,end_point)
+        point = self.moving_point(fig,path)
+
+        # Updating function, to be repeatedly called by the animation
+        # create animation with 10ms interval, which is repeated,
+        # provide the full path
+
+
+        def update(i):
             # obtain point coordinates 
             x = path[i][1]
             y = path[i][0]
@@ -60,27 +78,14 @@ class Simulation:
             # set point's coordinates
             point.set_data([x],[y])
 
-            return point
+            return point,
 
-        # Updating function, to be repeatedly called by the animation
-        # create animation with 10ms interval, which is repeated,
-        # provide the full path
-        ani = FuncAnimation(fig, update, interval=10, blit=True, repeat=True,frames=len(path))
+
+        anim = FuncAnimation(fig, update, interval=10, blit=True, repeat=True,frames=len(path))
 
         plt.show()
 
 
-    def do_animation(self):
-        """Set up and carry out the animation."""
-
-        self.creation_plot(image_brute,start_point,end_point)
-
-        """
-        self.setup_animation()
-        anim = animation.FuncAnimation(self.fig, self.animate,
-                init_func=self.init, frames=1, interval=1, blit=True)
-
-        """
 
     def __init__(self):
         """Initialize the simulation with n Particles.
@@ -105,40 +110,3 @@ if __name__ == '__main__':
     sim = Simulation()
 
     sim.do_animation()
-
-
-
-"""
-
-
-ax = gca()
-
-
-# create a point in the axes
-point, = ax.plot(0,1, marker="o")
-
-point2, = ax.plot(0,1, marker="o")
-
-# Updating function, to be repeatedly called by the animation
-def update(i):
-    # obtain point coordinates 
-    x = path[i][1]
-    y = path[i][0]
-    x2 = path2[i][1]
-    y2 = path2[i][0]
-
-
-    # set point's coordinates
-    point.set_data([x],[y])
-
-    point2.set_data([x2],[y2])
-    return point,point2,
-
-# create animation with 10ms interval, which is repeated,
-# provide the full path
-ani = FuncAnimation(fig, update, interval=10, blit=True, repeat=True,frames=len(path))
-
-
-plt.show()
-
-"""

@@ -12,7 +12,8 @@ from matplotlib.animation import FuncAnimation
 
 ax = gca()
 # create a point in the axes
-point, = ax.plot(0,1, marker="o")
+point,a = ax.plot(0,1, marker="o")
 
 print(ax.plot(0,1, marker="o"))
 print(point,)
+print(a)
