@@ -8,12 +8,9 @@ from skmpe import parameters, mpe, OdeSolverMethod
 from pylab import *
 from matplotlib.animation import FuncAnimation
 
+import random as rd
 
+start_type ="zone"
+start=((40,60),(100,200))
 
-ax = gca()
-# create a point in the axes
-point,a = ax.plot(0,1, marker="o")
-
-print(ax.plot(0,1, marker="o"))
-print(point,)
-print(a)
+print(start[0][1])

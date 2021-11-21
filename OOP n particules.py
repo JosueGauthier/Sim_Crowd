@@ -4,6 +4,7 @@ from matplotlib import pyplot as plt
 import numpy as np 
 from skmpe import parameters, mpe, OdeSolverMethod
 
+import random as rd
 
 from pylab import *
 from matplotlib.animation import FuncAnimation
@@ -24,13 +25,32 @@ class Simulation:
             path_info = mpe(speed_image, start_point, end_point)
         return path_info.path
 
-    def creation_plot(self,image_brute,start_point,end_point):
+    def creation_plot(self,image_brute,start,start_type,end_point):
+
+
 
         image = imr(image_brute, as_gray=True).astype(np.float_)
         speed_image = rescale_intensity(image, out_range=(0.005, 1.0))
 
         fig = plt.figure(figsize=(8,6), dpi=150)
         plt.imshow(image, cmap='gray')
+
+        if start_type == "point":
+            start_point = start
+
+
+        if start_type =="zone":
+            abs = rd.randint(start[0][0],start[0][1])
+            ord = rd.randint(start[1][0],start[1][1])
+            start_point =(abs,ord)
+
+
+        if start_type == "alea":
+            abs = rd.randint(0,800)
+            ord = rd.randint(0,800)
+            start_point =(abs,ord)
+
+
         pathCP = self.calc_chemin(speed_image,start_point,end_point)
         plt.plot(pathCP[:, 1], pathCP[:, 0], '-r', linewidth=1)
 
@@ -57,7 +77,7 @@ class Simulation:
         """Set up and carry out the animation."""
 
         #set up anim
-        fig,path = self.creation_plot(image_brute,start_point,end_point)
+        fig,path = self.creation_plot(image_brute,start,start_type,end_point)
         point = self.moving_point(fig,path)
 
         # Updating function, to be repeatedly called by the animation
@@ -97,7 +117,18 @@ if __name__ == '__main__':
     image_brute = '_static/maze.png'
 
     #si points de departs souhaités
-    start_point = (60, 238)
+    #start_type ="point"
+    #start = (60, 238)
+
+    #si zone de depart souhaitée
+    start_type ="zone"
+    start=((40,600),(100,200))
+
+    #si repartition alétoire
+    #start = None
+    #start_type ="alea"
+    
+    
     end_point = (621, 728)
 
     nparticles = 2
