@@ -216,12 +216,14 @@ class Simulation:
         self.circles = []
         for particle in self.particles:
             self.circles.append(particle.draw(self.ax))
+        #print(self.circles)
         return self.circles
 
     def animate(self, i):
         """The function passed to Matplotlib's FuncAnimation routine."""
 
         self.advance_animation()
+        print(self.circles)
         return self.circles
 
     def setup_animation(self):
@@ -255,7 +257,7 @@ class Simulation:
 
 
 if __name__ == '__main__':
-    nparticles = 20
+    nparticles = 2
     #radii = np.random.random(nparticles)*0.03+0.02 #particules de tailles random
     radii = 0.01
     styles = {'edgecolor': 'red','facecolor': 'red', 'linewidth': 0, 'fill':True }

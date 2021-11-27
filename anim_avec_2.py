@@ -71,9 +71,11 @@ def update(i):
     point.set_data([x],[y])
 
     point2.set_data([x2],[y2])
+
+    print(point,point2)
     return point,point2,
 
-# create animation with 10ms interval, which is repeated,
+# create animation with 10ms interval, which is repea ted,
 # provide the full path
 ani = FuncAnimation(fig, update, interval=10, blit=True, repeat=True,frames=len(path))
 

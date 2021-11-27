@@ -92,22 +92,7 @@ class Simulation:
             point_list.append(ax.plot(0,1, marker="o"))
 
 
-        print(point_list)
-        print("aaa")
-        newest = [i[0] for i in point_list]
-
-        print(newest)
-        return newest
-
-        """
-
-        self.circles = []
-        for particle in self.particles:
-            self.circles.append(particle.draw(self.ax))
-        #print(self.circles)
-        return self.circles
-
-        """
+        return point_list
         
 
 
@@ -123,21 +108,7 @@ class Simulation:
         # create animation with 10ms interval, which is repeated,
         # provide the full path
         
-        
-        def update(i):
-            # obtain point coordinates 
-            for particule_i in range(nparticles):
-
-                particule[particule_i].x= particule[particule_i].path_p[i][1]
-                particule[particule_i].y= particule[particule_i].path_p[i][0]        
-                
-                # set point's coordinates
-                point_list[particule_i].set_data(particule[particule_i].x,particule[particule_i].y)
-
-            return point_list
-
-
-        anim = FuncAnimation(fig, update, interval=10, blit=True, repeat=True,frames=2000)
+        anim = FuncAnimation(fig, self.animate, interval=10, blit=True, repeat=True,frames=600)
         #anim = animation.FuncAnimation(self.fig, self.animate,init_func=self.init, frames=1000, interval=interval, blit=True)
         
 
@@ -150,8 +121,24 @@ class Simulation:
         print(self.circles)
         return self.circles
 
-        
+    def update(self,i):
+        # obtain point coordinates 
+        for particule_i in range(nparticles):
 
+            particule[particule_i].x= particule[particule_i].path_p[i][1]
+            particule[particule_i].y= particule[particule_i].path_p[i][0]
+            print(particule[particule_i].x)
+
+            print("aa")
+            # set point's coordinates
+            point_list[particule_i][0].set_data(particule[particule_i].x,particule[particule_i].y)
+        print(point_list[0][0])
+        print(point_list[1][0])
+        print(point_list)
+        
+        return 
+    
+    
     def __init__(self,nbparticules):
         """Initialize the simulation with n Particles.
         """
@@ -179,7 +166,7 @@ if __name__ == '__main__':
     
     end_point = (621, 728)
 
-    nparticles = 40
+    nparticles = 2
     raddi = 10 #raddius of particle
     styles = {'edgecolor': 'red','facecolor': 'red', 'linewidth': 0, 'fill':True }
     
