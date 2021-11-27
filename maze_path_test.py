@@ -16,6 +16,8 @@ with parameters(ode_solver_method=OdeSolverMethod.LSODA, integrate_max_step=1.0)
     path_info = mpe(speed_image, start_point, end_point)
 
 path = path_info.path
+print(path_info[0])
+input()
 
 plt.imshow(image, cmap='gray')
 plt.plot(path[:, 1], path[:, 0], '-r', linewidth=2)

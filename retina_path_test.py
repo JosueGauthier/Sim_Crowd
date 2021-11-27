@@ -15,6 +15,7 @@ end_point = (611, 442)
 way_points = [(330, 98), (554, 203)]
 
 path_info = mpe(speed_image, start_point, end_point, way_points)
+print(path_info[0])
 
 px, py = path_info.path[:, 1], path_info.path[:, 0]
 

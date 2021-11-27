@@ -64,74 +64,80 @@ class Simulation:
                 start_point =(abs,ord)
 
             if start_type == "alea":
-                abs = rd.randint(0,800)
-                ord = rd.randint(0,800)
+                abs = rd.randint(0,749)
+                ord = rd.randint(0,749)
                 start_point =(abs,ord)
             
             pathCP = self.calc_chemin(speed_image,start_point,end_point)
             p = Particle(start_point[0],start_point[1],pathCP)
             particule.append(p)
-            
-        print(particule)
-        print(particule[0].path_p)
-            
-
-
-        pathCP = self.calc_chemin(speed_image,start_point,end_point)
-
-
-
-
-        plt.plot(pathCP[:, 1], pathCP[:, 0], '-r', linewidth=1)
-
-        plt.plot(*start_point[::-1], 'oy')
-        plt.plot(*end_point[::-1], 'og')
-
-
+            plt.plot(pathCP[:, 1], pathCP[:, 0], '-r', linewidth=1)
+            plt.plot(*start_point[::-1], 'oy')
+            plt.plot(*end_point[::-1], 'og')
+  
+    
         ylim(0,800)
         xlim(0,800)
         grid()
 
-        return fig,pathCP
+        return fig,particule
 
-    def moving_point(self,fig,path) :
+    def moving_point(self,fig,particule,nparticule) :
 
-        ax = gca()
-        # create a point in the axes
-        point, = ax.plot(0,1, marker="o")
+        point_list=[]
+        
+        for i in range(nparticule):
+            ax = gca()
+            # create a point in the axes
+            point_list.append(ax.plot(0,1, marker="o"))
 
-        return point
+
+        return point_list
+        
 
 
     def do_animation(self):
         """Set up and carry out the animation."""
 
         #set up anim
-        fig,path = self.creation_plot(image_brute,start,start_type,end_point,nparticles)
-        point = self.moving_point(fig,path)
+        fig,particule = self.creation_plot(image_brute,start,start_type,end_point,nparticles)
+        point_list = self.moving_point(fig,particule,nparticles)
+
 
         # Updating function, to be repeatedly called by the animation
         # create animation with 10ms interval, which is repeated,
         # provide the full path
-
-
-
+        
+        
         def update(i):
             # obtain point coordinates 
-            x = path[i][1]
-            y = path[i][0]
+            for particule_i in range(nparticles):
 
-            # set point's coordinates
-            point.set_data([x],[y])
+                particule[particule_i].x= particule[particule_i].path_p[i][0]
+                particule[particule_i].y= particule[particule_i].path_p[i][1]
+                print(particule[particule_i].x)
 
-            return point,
+                print("aa")
+                # set point's coordinates
+                point_list[particule_i][0].set_data(particule[particule_i].x,particule[particule_i].y)
+            print(point_list[0][0])
+
+            myList = point_list
+            One_liste_point_list =','.join([item for sub_list in myList for item in sub_list])
+
+            # ','.join([item for sub_list in myList for item in sub_list])
+
+            print(One_liste_point_list)
+            return One_liste_point_list
 
 
-        anim = FuncAnimation(fig, update, interval=10, blit=True, repeat=True,frames=len(path))
+        anim = FuncAnimation(fig, update, interval=10, blit=True, repeat=True,frames=600)
+        #anim = animation.FuncAnimation(self.fig, self.animate,init_func=self.init, frames=1000, interval=interval, blit=True)
+        
 
         plt.show()
 
-
+        
 
     def __init__(self,nbparticules):
         """Initialize the simulation with n Particles.

@@ -73,11 +73,14 @@ class Simulation:
             # set point's coordinates
             point.set_data([x],[y])
 
+            print(point,)            
             return point,
+        
+
 
 
         anim = FuncAnimation(fig, update, interval=10, blit=True, repeat=True,frames=len(path))
-
+        #anim = animation.FuncAnimation(self.fig, self.animate,init_func=self.init, frames=1000, interval=interval, blit=True)
         plt.show()
 
 
