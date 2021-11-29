@@ -1,3 +1,4 @@
+from os import path
 from skimage.io import imread as imr
 from skimage.exposure import rescale_intensity
 from matplotlib import pyplot as plt
@@ -71,9 +72,10 @@ class Simulation:
             pathCP = self.calc_chemin(speed_image,start_point,end_point)
             p = Particle(start_point[0],start_point[1],pathCP)
             particule.append(p)
-            plt.plot(pathCP[:, 1], pathCP[:, 0], '-r', linewidth=1)
-            plt.plot(*start_point[::-1], 'oy')
-            plt.plot(*end_point[::-1], 'og')
+            if self.affiche_trj == True: 
+                plt.plot(pathCP[:, 1], pathCP[:, 0], '-r', linewidth=1)
+                plt.plot(*start_point[::-1], 'oy')
+                plt.plot(*end_point[::-1], 'og')
   
     
         ylim(0,800)
@@ -92,11 +94,11 @@ class Simulation:
             point_list.append(ax.plot(0,1, marker="o"))
 
 
-        print(point_list)
-        print("aaa")
+        #print(point_list)
+        #print("aaa")
         newest = [i[0] for i in point_list]
 
-        print(newest)
+        #print(newest)
         return newest
 
         """
@@ -128,11 +130,17 @@ class Simulation:
             # obtain point coordinates 
             for particule_i in range(nparticles):
 
-                particule[particule_i].x= particule[particule_i].path_p[i][1]
-                particule[particule_i].y= particule[particule_i].path_p[i][0]        
-                
-                # set point's coordinates
-                point_list[particule_i].set_data(particule[particule_i].x,particule[particule_i].y)
+                print(particule[particule_i].path_p[i])
+
+                if i < len(particule[particule_i].path_p[i][1]):
+
+                    particule[particule_i].x= particule[particule_i].path_p[i][1]
+                    particule[particule_i].y= particule[particule_i].path_p[i][0]        
+                    
+                    # set point's coordinates
+                    point_list[particule_i].set_data(particule[particule_i].x,particule[particule_i].y)
+                else:
+                    pass
 
             return point_list
 
@@ -141,25 +149,19 @@ class Simulation:
         #anim = animation.FuncAnimation(self.fig, self.animate,init_func=self.init, frames=1000, interval=interval, blit=True)
         
 
-        plt.show()
-    
-    def animate(self, i):
-        """The function passed to Matplotlib's FuncAnimation routine."""
+        plt.show()      
 
-        self.update()
-        print(self.circles)
-        return self.circles
-
-        
-
-    def __init__(self,nbparticules):
+    def __init__(self,nbparticules,afficher_trajet):
         """Initialize the simulation with n Particles.
         """
         self.nbparticules = nbparticules
+        self.affiche_trj = afficher_trajet
 
 
     
 if __name__ == '__main__':
+
+    afficher_trajet = False
 
     #chemin vers l'image du plan d'evacuation 
     image_brute = '_static/maze.png'
@@ -179,10 +181,10 @@ if __name__ == '__main__':
     
     end_point = (621, 728)
 
-    nparticles = 40
+    nparticles = 1
     raddi = 10 #raddius of particle
     styles = {'edgecolor': 'red','facecolor': 'red', 'linewidth': 0, 'fill':True }
     
-    sim = Simulation(nparticles)
+    sim = Simulation(nparticles,afficher_trajet)
 
     sim.do_animation()
