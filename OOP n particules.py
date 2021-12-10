@@ -11,6 +11,9 @@ from pylab import *
 from matplotlib.animation import FuncAnimation
 from matplotlib import animation
 
+from matplotlib.patches import Circle
+
+
 
 
 class Particle:
@@ -21,6 +24,7 @@ class Particle:
 
         self.coord = np.array((x, y))
         self.path_p = path
+        self.radius = raddi
 
     @property
     def x(self):
@@ -34,6 +38,13 @@ class Particle:
     @y.setter
     def y(self, value):
         self.coord[1] = value
+
+    def draw(self, ax):
+        """Add this Particle's Circle patch to the Matplotlib Axes ax."""
+
+        circle = Circle((self.x,self.y), radius=self.radius, **self.styles)
+        ax.add_patch(circle)
+        return circle
  
 class Simulation:
     """A class for a simulation of n people try to escape the maze/room/building"""
@@ -120,6 +131,10 @@ class Simulation:
             anim.save(filename, writer=writer)
         else:
             plt.show()
+
+    def collisions(self): 
+     
+        pass
         
 
 
@@ -157,11 +172,6 @@ class Simulation:
                     pass
 
             return point_list
-
-
-        
-
-
 
         anim = FuncAnimation(fig, update, interval=10, blit=True, repeat=True,frames=2000)
         #anim = animation.FuncAnimation(self.fig, self.animate,init_func=self.init, frames=1000, interval=interval, blit=True)
@@ -205,4 +215,4 @@ if __name__ == '__main__':
     
     sim = Simulation(nparticles,afficher_trajet)
 
-    sim.do_animation(save=True)
+    sim.do_animation(save=False)
