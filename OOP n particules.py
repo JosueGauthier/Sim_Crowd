@@ -130,9 +130,10 @@ class Simulation:
             # obtain point coordinates 
             for particule_i in range(nparticles):
 
-                print(particule[particule_i].path_p[i])
+                #print(particule[particule_i].path_p[i][1])
+                #print(len(particule[particule_i].path_p[:][:]))
 
-                if i < len(particule[particule_i].path_p[i][1]):
+                if i < len(particule[particule_i].path_p[:][:]):
 
                     particule[particule_i].x= particule[particule_i].path_p[i][1]
                     particule[particule_i].y= particule[particule_i].path_p[i][0]        
