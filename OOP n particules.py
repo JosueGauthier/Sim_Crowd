@@ -9,6 +9,8 @@ import random as rd
 
 from pylab import *
 from matplotlib.animation import FuncAnimation
+from matplotlib import animation
+
 
 
 class Particle:
@@ -110,11 +112,22 @@ class Simulation:
         return self.circles
 
         """
+
+    def save_or_show_animation(self, anim, save, filename='collision.mp4'):
+        if save:
+            Writer = animation.writers['ffmpeg']
+            writer = Writer(fps=60, bitrate=1800)
+            anim.save(filename, writer=writer)
+        else:
+            plt.show()
         
 
 
-    def do_animation(self):
+    def do_animation(self,save=False, interval=1, filename='N_particles_movie.mp4'):
         """Set up and carry out the animation."""
+
+
+
 
         #set up anim
         fig,particule = self.creation_plot(image_brute,start,start_type,end_point,nparticles)
@@ -146,11 +159,15 @@ class Simulation:
             return point_list
 
 
-        anim = FuncAnimation(fig, update, interval=10, blit=True, repeat=True,frames=2000)
-        #anim = animation.FuncAnimation(self.fig, self.animate,init_func=self.init, frames=1000, interval=interval, blit=True)
         
 
-        plt.show()      
+
+
+        anim = FuncAnimation(fig, update, interval=10, blit=True, repeat=True,frames=2000)
+        #anim = animation.FuncAnimation(self.fig, self.animate,init_func=self.init, frames=1000, interval=interval, blit=True)
+        self.save_or_show_animation(anim, save, filename)
+    
+        #plt.show()      
 
     def __init__(self,nbparticules,afficher_trajet):
         """Initialize the simulation with n Particles.
@@ -188,4 +205,4 @@ if __name__ == '__main__':
     
     sim = Simulation(nparticles,afficher_trajet)
 
-    sim.do_animation()
+    sim.do_animation(save=True)

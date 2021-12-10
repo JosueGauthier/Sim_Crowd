@@ -223,7 +223,7 @@ class Simulation:
         """The function passed to Matplotlib's FuncAnimation routine."""
 
         self.advance_animation()
-        print(self.circles)
+        #print(self.circles)
         return self.circles
 
     def setup_animation(self):
