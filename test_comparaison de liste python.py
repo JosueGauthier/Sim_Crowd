@@ -79,8 +79,9 @@ find_true_in_test_g=[i for i, x in enumerate(test_g) if x]
 #modif sur la liste b
 
 for i in list_des_index_true: 
-    x_b[i] = x_b[i-1]
-    y_b[i] = y_b[i-1]
+    for j in range(10):
+        x_b[i+j] = x_b[i-1]
+        y_b[i+j] = y_b[i-1]
 
 
 print(x_b)

@@ -53,19 +53,24 @@ class Simulation:
 
     def calc_chemin(self,speed_image,start_point,end_point):
 
+
+        """
         with parameters(ode_solver_method=OdeSolverMethod.LSODA, integrate_max_step=1.0):
             path_info = mpe(speed_image, start_point, end_point)
 
         path_val_dupliqu = []
 
-        #print(len(path_info.path[:][:]))
-
         for i in range(len(path_info.path[:][:])):
             path_val_dupliqu.append(path_info.path[i][:])
             path_val_dupliqu.append(path_info.path[i][:])
         
-        #print(path_val_dupliqu)
         return path_val_dupliqu
+
+        """
+
+        with parameters(ode_solver_method=OdeSolverMethod.LSODA, integrate_max_step=1.0):
+            path_info = mpe(speed_image, start_point, end_point)
+        return path_info.path
 
 
 
@@ -95,9 +100,10 @@ class Simulation:
                 start_point =(abs,ord)
             
             pathCP = self.calc_chemin(speed_image,start_point,end_point)
+            
             p = Particle(start_point[0],start_point[1],pathCP)
             particule.append(p)
-            if self.affiche_trj == True: 
+            if self.affiche_trj == True:
                 plt.plot(pathCP[:, 1], pathCP[:, 0], '-r', linewidth=1)
                 plt.plot(*start_point[::-1], 'oy')
                 plt.plot(*end_point[::-1], 'og')
@@ -119,11 +125,7 @@ class Simulation:
             point_list.append(ax.plot(0,1, marker="o"))
 
 
-        #print(point_list)
-        #print("aaa")
         newest = [i[0] for i in point_list]
-
-        #print(newest)
         return newest
 
         """
@@ -144,44 +146,81 @@ class Simulation:
         else:
             plt.show()
 
-    def recherche_de_collisions(self,particule):
+    def recherche_de_collisions(self,particule,nparticles):
+
+        for particule_i in range(nparticles-1) :
+            
+            y_a = particule[particule_i].path_p[:,1]
+            x_a = particule[particule_i].path_p[:,0]
+
+            y_b = particule[particule_i+1].path_p[:,1]
+            x_b = particule[particule_i+1].path_p[:,0]
+
+    
+            #on arrondi les listes des coordonnées x&y
+
+            round_to_tenths_xa = [round(num, 1) for num in x_a]
+            round_to_tenths_xb = [round(num, 1) for num in x_b]
+            round_to_tenths_ya = [round(num, 1) for num in y_a]
+            round_to_tenths_yb = [round(num, 1) for num in y_b]
+
+            #on cherche les valeurs des coordonnées x puis y ou il elles sont egales
+
+            test_x = [i == j for i, j in zip(round_to_tenths_xa, round_to_tenths_xb)]
+            test_y = [i == j for i, j in zip(round_to_tenths_ya, round_to_tenths_yb)]
+
+            #si on a True des une des listes de test au meme index on renvoie l'index en question
+
+            find_true_in_testx=[i for i, x in enumerate(test_x) if x]
+            find_true_in_testy=[i for i, x in enumerate(test_y) if x]
+
+            test_g = [i == j for i, j in zip(find_true_in_testx, find_true_in_testy)]
+
+            #on recup l'index des listes des presences True
+
+            list_des_index_true=[]
+            j=0
+            for i in test_g:
+                if i == True:
+                    list_des_index_true.append(find_true_in_testx[j])
+                j=j+1
+
+            #modif sur la liste b
+
+            print(y_b)
 
         
+            for i in list_des_index_true:
 
-        for particule_i in range(nparticles):
+                for j in range(2) :
 
-                
-                if i < len(particule[particule_i].path_p[:][:]):
+                    if i-j > 0 :
+                        x_b[i] = x_b[i-j]
+                    if i-j > 0 :
+                        y_b[i] = y_b[i-j]
+        
+            particule[particule_i+1].path_p[:,1] = y_b
+            particule[particule_i+1].path_p[:,0] = x_b
 
-                    particule[particule_i].x= particule[particule_i].path_p[i][1]
-                    particule[particule_i].y= particule[particule_i].path_p[i][0]        
-                    
-                    # set point's coordinates
-                else:
-                    pass
+            print(y_b)
 
-        return particules_sans_collisions
-         
+    
+        return particule
 
 
     def do_animation(self,save=False, interval=1, filename='N_particles_movie.mp4'):
         """Set up and carry out the animation."""
 
 
-
-
         #set up anim
         fig,particule = self.creation_plot(image_brute,start,start_type,end_point,nparticles)
-        particule_sans_collisions = self.recherche_de_collisions(particule)
+        particule = self.recherche_de_collisions(particule,nparticles)
         point_list = self.moving_point(fig,particule,nparticles)
-
-
 
 
         # Updating function, to be repeatedly called by the animation
         # create animation with 10ms interval, which is repeated,
         # provide the full path
-        
         
         def update(i):
             # obtain point coordinates 
@@ -216,18 +255,18 @@ class Simulation:
     
 if __name__ == '__main__':
 
-    afficher_trajet = False
+    afficher_trajet = True
 
     #chemin vers l'image du plan d'evacuation 
     image_brute = '_static/maze.png'
 
     #si points de departs souhaités
-    #start_type ="point"
-    #start = (60, 238)
+    start_type ="point"
+    start = (60, 238)
 
     #si zone de depart souhaitée
-    start_type ="zone"
-    start=((40,600),(100,200))
+    #start_type ="zone"
+    #start=((40,600),(40,600))
 
     #si repartition alétoire
     #start = None

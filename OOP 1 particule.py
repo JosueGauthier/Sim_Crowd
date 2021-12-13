@@ -4,7 +4,6 @@ from matplotlib import pyplot as plt
 import numpy as np 
 from skmpe import parameters, mpe, OdeSolverMethod
 
-
 from pylab import *
 from matplotlib.animation import FuncAnimation
 
@@ -32,6 +31,7 @@ class Simulation:
         fig = plt.figure(figsize=(8,6), dpi=150)
         plt.imshow(image, cmap='gray')
         pathCP = self.calc_chemin(speed_image,start_point,end_point)
+        print(pathCP)
         plt.plot(pathCP[:, 1], pathCP[:, 0], '-r', linewidth=1)
 
         plt.plot(*start_point[::-1], 'oy')
@@ -72,8 +72,7 @@ class Simulation:
 
             # set point's coordinates
             point.set_data([x],[y])
-
-            print(point,)            
+            
             return point,
         
 
@@ -84,12 +83,10 @@ class Simulation:
         plt.show()
 
 
-
     def __init__(self):
         """Initialize the simulation with n Particles.
         """
         pass
-
     
 if __name__ == '__main__':
 
