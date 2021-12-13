@@ -55,7 +55,19 @@ class Simulation:
 
         with parameters(ode_solver_method=OdeSolverMethod.LSODA, integrate_max_step=1.0):
             path_info = mpe(speed_image, start_point, end_point)
-        return path_info.path
+
+        path_val_dupliqu = []
+
+        #print(len(path_info.path[:][:]))
+
+        for i in range(len(path_info.path[:][:])):
+            path_val_dupliqu.append(path_info.path[i][:])
+            path_val_dupliqu.append(path_info.path[i][:])
+        
+        #print(path_val_dupliqu)
+        return path_val_dupliqu
+
+
 
     def creation_plot(self,image_brute,start,start_type,end_point,nparticles):
 
@@ -132,10 +144,24 @@ class Simulation:
         else:
             plt.show()
 
-    def collisions(self): 
-     
-        pass
+    def recherche_de_collisions(self,particule):
+
         
+
+        for particule_i in range(nparticles):
+
+                
+                if i < len(particule[particule_i].path_p[:][:]):
+
+                    particule[particule_i].x= particule[particule_i].path_p[i][1]
+                    particule[particule_i].y= particule[particule_i].path_p[i][0]        
+                    
+                    # set point's coordinates
+                else:
+                    pass
+
+        return particules_sans_collisions
+         
 
 
     def do_animation(self,save=False, interval=1, filename='N_particles_movie.mp4'):
@@ -146,7 +172,10 @@ class Simulation:
 
         #set up anim
         fig,particule = self.creation_plot(image_brute,start,start_type,end_point,nparticles)
+        particule_sans_collisions = self.recherche_de_collisions(particule)
         point_list = self.moving_point(fig,particule,nparticles)
+
+
 
 
         # Updating function, to be repeatedly called by the animation
@@ -158,9 +187,7 @@ class Simulation:
             # obtain point coordinates 
             for particule_i in range(nparticles):
 
-                #print(particule[particule_i].path_p[i][1])
-                #print(len(particule[particule_i].path_p[:][:]))
-
+                
                 if i < len(particule[particule_i].path_p[:][:]):
 
                     particule[particule_i].x= particule[particule_i].path_p[i][1]
@@ -209,7 +236,7 @@ if __name__ == '__main__':
     
     end_point = (621, 728)
 
-    nparticles = 1
+    nparticles = 2
     raddi = 10 #raddius of particle
     styles = {'edgecolor': 'red','facecolor': 'red', 'linewidth': 0, 'fill':True }
     
