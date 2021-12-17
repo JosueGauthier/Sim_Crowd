@@ -19,12 +19,22 @@ from matplotlib.patches import Circle
 class Particle:
     """A class representing a two-dimensional particle."""
 
-    def __init__(self, x, y,path):
+    def __init__(self, x, y,path,vpart):
         """Initialize the particle's position, velocity, and radius."""
 
         self.coord = np.array((x, y))
         self.path_p = path
         self.radius = raddi
+        self.vpart = vpart
+
+        #self.v = np.array((vx, vy))
+
+        """"
+        self.styles = styles
+        if not self.styles:
+            # Default circle styles
+            self.styles = {'edgecolor': 'b','facecolor':'r', 'fill': False}
+        """
 
     @property
     def x(self):
@@ -39,12 +49,33 @@ class Particle:
     def y(self, value):
         self.coord[1] = value
 
+    @property
+    def vx(self):
+        return self.v[0]
+    @vx.setter
+    def vx(self, value):
+        self.v[0] = value
+    @property
+    def vy(self):
+        return self.v[1]
+    @vy.setter
+    def vy(self, value):
+        self.v[1] = value
+
+
     def draw(self, ax):
         """Add this Particle's Circle patch to the Matplotlib Axes ax."""
 
         circle = Circle((self.x,self.y), radius=self.radius, **self.styles)
         ax.add_patch(circle)
         return circle
+
+    #functions not used but usefull
+
+    def overlaps(self, other):
+        """Does the circle of this Particle overlap that of other?"""
+
+        return np.hypot(*(self.r - other.r)) < self.radius + other.radius
  
 class Simulation:
     """A class for a simulation of n people try to escape the maze/room/building"""
@@ -53,20 +84,6 @@ class Simulation:
 
     def calc_chemin(self,speed_image,start_point,end_point):
 
-
-        """
-        with parameters(ode_solver_method=OdeSolverMethod.LSODA, integrate_max_step=1.0):
-            path_info = mpe(speed_image, start_point, end_point)
-
-        path_val_dupliqu = []
-
-        for i in range(len(path_info.path[:][:])):
-            path_val_dupliqu.append(path_info.path[i][:])
-            path_val_dupliqu.append(path_info.path[i][:])
-        
-        return path_val_dupliqu
-
-        """
 
         with parameters(ode_solver_method=OdeSolverMethod.LSODA, integrate_max_step=1.0):
             path_info = mpe(speed_image, start_point, end_point)
@@ -100,8 +117,10 @@ class Simulation:
                 start_point =(abs,ord)
             
             pathCP = self.calc_chemin(speed_image,start_point,end_point)
+
+            vpart = random()
             
-            p = Particle(start_point[0],start_point[1],pathCP)
+            p = Particle(start_point[0],start_point[1],pathCP,vpart)
             particule.append(p)
             if self.affiche_trj == True:
                 plt.plot(pathCP[:, 1], pathCP[:, 0], '-r', linewidth=1)
@@ -214,26 +233,41 @@ class Simulation:
 
         #set up anim
         fig,particule = self.creation_plot(image_brute,start,start_type,end_point,nparticles)
-        particule = self.recherche_de_collisions(particule,nparticles)
+        #particule = self.recherche_de_collisions(particule,nparticles)
         point_list = self.moving_point(fig,particule,nparticles)
 
 
         # Updating function, to be repeatedly called by the animation
         # create animation with 10ms interval, which is repeated,
         # provide the full path
+
+        
         
         def update(i):
             # obtain point coordinates 
+            vpart2 = 0.1
+            vpart = 1 
+
+            iterationj = int(i*vpart2)
+
             for particule_i in range(nparticles):
 
                 
                 if i < len(particule[particule_i].path_p[:][:]):
 
-                    particule[particule_i].x= particule[particule_i].path_p[i][1]
-                    particule[particule_i].y= particule[particule_i].path_p[i][0]        
+                    if particule_i != 2 :
+                        particule[particule_i].x= particule[particule_i].path_p[i][1]
+                        particule[particule_i].y= particule[particule_i].path_p[i][0]
+                        # set point's coordinates
+                        point_list[particule_i].set_data(particule[particule_i].x,particule[particule_i].y)
+                    else:
                     
-                    # set point's coordinates
-                    point_list[particule_i].set_data(particule[particule_i].x,particule[particule_i].y)
+                        iterationj = iterationj+1
+                        particule[particule_i].x= particule[particule_i].path_p[iterationj][1]
+                        particule[particule_i].y= particule[particule_i].path_p[iterationj][0]
+                        # set point's coordinates
+                        point_list[particule_i].set_data(particule[particule_i].x,particule[particule_i].y)
+                    
                 else:
                     pass
 
@@ -275,7 +309,7 @@ if __name__ == '__main__':
     
     end_point = (621, 728)
 
-    nparticles = 2
+    nparticles = 3
     raddi = 10 #raddius of particle
     styles = {'edgecolor': 'red','facecolor': 'red', 'linewidth': 0, 'fill':True }
     
