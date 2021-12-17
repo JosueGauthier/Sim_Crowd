@@ -242,31 +242,19 @@ class Simulation:
         # provide the full path
 
         
-        
         def update(i):
-            # obtain point coordinates 
-            vpart2 = 0.1
-            vpart = 1 
-
-            iterationj = int(i*vpart2)
+            # obtain point coordinates
 
             for particule_i in range(nparticles):
-
                 
+                incremant_corrige_en_vitesse = int(i*particule[particule_i].vpart)
+
                 if i < len(particule[particule_i].path_p[:][:]):
 
-                    if particule_i != 2 :
-                        particule[particule_i].x= particule[particule_i].path_p[i][1]
-                        particule[particule_i].y= particule[particule_i].path_p[i][0]
-                        # set point's coordinates
-                        point_list[particule_i].set_data(particule[particule_i].x,particule[particule_i].y)
-                    else:
-                    
-                        iterationj = iterationj+1
-                        particule[particule_i].x= particule[particule_i].path_p[iterationj][1]
-                        particule[particule_i].y= particule[particule_i].path_p[iterationj][0]
-                        # set point's coordinates
-                        point_list[particule_i].set_data(particule[particule_i].x,particule[particule_i].y)
+                    particule[particule_i].x= particule[particule_i].path_p[incremant_corrige_en_vitesse][1]
+                    particule[particule_i].y= particule[particule_i].path_p[incremant_corrige_en_vitesse][0]
+                    # set point's coordinates
+                    point_list[particule_i].set_data(particule[particule_i].x,particule[particule_i].y)
                     
                 else:
                     pass
