@@ -226,6 +226,8 @@ class Simulation:
     
         return particule
 
+    def verifier_non_collision(self, particule_i):
+        pass
 
     def do_animation(self,save=False, interval=1, filename='N_particles_movie.mp4'):
         """Set up and carry out the animation."""
@@ -233,8 +235,10 @@ class Simulation:
 
         #set up anim
         fig,particule = self.creation_plot(image_brute,start,start_type,end_point,nparticles)
-        #particule = self.recherche_de_collisions(particule,nparticles)
+        particule = self.recherche_de_collisions(particule,nparticles)
         point_list = self.moving_point(fig,particule,nparticles)
+
+        input("lancer l'animation")
 
 
         # Updating function, to be repeatedly called by the animation
@@ -247,21 +251,43 @@ class Simulation:
 
             for particule_i in range(nparticles):
                 
-                incremant_corrige_en_vitesse = int(i*particule[particule_i].vpart)
+                incremant_corrige_en_vitesse = int(i*particule[particule_i].vpart)*10
 
-                if i < len(particule[particule_i].path_p[:][:]):
+                if incremant_corrige_en_vitesse < len(particule[particule_i].path_p[:][:]):
 
-                    particule[particule_i].x= particule[particule_i].path_p[incremant_corrige_en_vitesse][1]
-                    particule[particule_i].y= particule[particule_i].path_p[incremant_corrige_en_vitesse][0]
-                    # set point's coordinates
-                    point_list[particule_i].set_data(particule[particule_i].x,particule[particule_i].y)
-                    
+                    self.verifier_non_collision(particule_i)
+
+                    #verifier non collision si increment de valeur : incremant_corrige_en_vitesse au niveau de la 
+                    #particule : particule_i
+
+                    noncollision = True
+
+                    for particule_diff_de_i in range(nparticles):
+
+                        particule_i_coord_x= particule[particule_i].path_p[incremant_corrige_en_vitesse][1]
+                        particule_i_coord_y= particule[particule_i].path_p[incremant_corrige_en_vitesse][0]
+                        # set point's coordinates
+
+                        
+                        if particule_diff_de_i != particule_i :
+
+                            if np.sqrt((particule_i_coord_x-particule[particule_diff_de_i].x)**2 + (particule_i_coord_y-particule[particule_diff_de_i].y)**2) < 10 :
+                                print("distance trop faible")
+                                #return True
+                                noncollision = False
+
+                    if noncollision == True :
+                        particule[particule_i].x= particule[particule_i].path_p[incremant_corrige_en_vitesse][1]
+                        particule[particule_i].y= particule[particule_i].path_p[incremant_corrige_en_vitesse][0]
+                        # set point's coordinates
+                        point_list[particule_i].set_data(particule[particule_i].x,particule[particule_i].y)
+
                 else:
                     pass
 
             return point_list
 
-        anim = FuncAnimation(fig, update, interval=10, blit=True, repeat=True,frames=2000)
+        anim = FuncAnimation(fig, update, interval=10, blit=True, repeat=True,frames=20000)
         #anim = animation.FuncAnimation(self.fig, self.animate,init_func=self.init, frames=1000, interval=interval, blit=True)
         self.save_or_show_animation(anim, save, filename)
     
@@ -277,27 +303,27 @@ class Simulation:
     
 if __name__ == '__main__':
 
-    afficher_trajet = True
+    afficher_trajet = False
 
     #chemin vers l'image du plan d'evacuation 
     image_brute = '_static/maze.png'
 
     #si points de departs souhaités
-    start_type ="point"
-    start = (60, 238)
+    #start_type ="point"
+    #start = (60, 238)
 
     #si zone de depart souhaitée
     #start_type ="zone"
     #start=((40,600),(40,600))
 
     #si repartition alétoire
-    #start = None
-    #start_type ="alea"
+    start = None
+    start_type ="alea"
     
     
     end_point = (621, 728)
 
-    nparticles = 3
+    nparticles = 100
     raddi = 10 #raddius of particle
     styles = {'edgecolor': 'red','facecolor': 'red', 'linewidth': 0, 'fill':True }
     
