@@ -15,26 +15,27 @@ from matplotlib.patches import Circle
 
 
 
-
 class Particle:
     """A class representing a two-dimensional particle."""
 
     def __init__(self, x, y,path,vpart):
-        """Initialize the particle's position, velocity, and radius."""
+        """Initialize the particle's position, path, and speed (vpart)."""
 
         self.coord = np.array((x, y))
         self.path_p = path
         self.radius = raddi
         self.vpart = vpart
 
-        #self.v = np.array((vx, vy))
 
+        #If you want to apply styles to particles uncomment the section below 
         """"
         self.styles = styles
         if not self.styles:
             # Default circle styles
             self.styles = {'edgecolor': 'b','facecolor':'r', 'fill': False}
         """
+
+    #property and setter to facilitate access to property of particles
 
     @property
     def x(self):
@@ -63,6 +64,9 @@ class Particle:
         self.v[1] = value
 
 
+
+    #function not used but usefull in the case where you will use a circle shape instead of point
+
     def draw(self, ax):
         """Add this Particle's Circle patch to the Matplotlib Axes ax."""
 
@@ -70,20 +74,20 @@ class Particle:
         ax.add_patch(circle)
         return circle
 
-    #functions not used but usefull
 
     def overlaps(self, other):
         """Does the circle of this Particle overlap that of other?"""
 
         return np.hypot(*(self.r - other.r)) < self.radius + other.radius
  
+
 class Simulation:
     """A class for a simulation of n people try to escape the maze/room/building"""
 
     ParticleClass = Particle
 
     def calc_chemin(self,speed_image,start_point,end_point):
-
+        """function allowing to calculate the path (ode_solver_method LSODA is advised to have good performance)"""
 
         with parameters(ode_solver_method=OdeSolverMethod.LSODA, integrate_max_step=1.0):
             path_info = mpe(speed_image, start_point, end_point)
@@ -92,6 +96,7 @@ class Simulation:
 
 
     def creation_plot(self,image_brute,start,start_type,end_point,nparticles):
+        """generation of the path according to the parameters entered"""
 
         image = imr(image_brute, as_gray=True).astype(np.float_)
         speed_image = rescale_intensity(image, out_range=(0.005, 1.0))
@@ -135,6 +140,7 @@ class Simulation:
         return fig,particule
 
     def moving_point(self,fig,particule,nparticule) :
+        """generation of a moving point following the path"""
 
         point_list=[]
         
@@ -158,6 +164,7 @@ class Simulation:
         """
 
     def save_or_show_animation(self, anim, save, filename='collision.mp4'):
+        """If you want to use the save function of matplotlib animation; it will generate a .mp4 movie FFMPEG is required"""
         if save:
             Writer = animation.writers['ffmpeg']
             writer = Writer(fps=60, bitrate=1800)
@@ -166,6 +173,7 @@ class Simulation:
             plt.show()
 
     def recherche_de_collisions(self,particule,nparticles):
+        """function allowing to detect the collisions between particles. If there is a collision, the late particle stops to let the first particle go"""
 
         for particule_i in range(nparticles-1) :
             
@@ -247,6 +255,7 @@ class Simulation:
 
         
         def update(i):
+            """loop allowing the update of the animation following the incrementing of time i"""
             # obtain point coordinates
 
             for particule_i in range(nparticles):
@@ -272,8 +281,7 @@ class Simulation:
                         if particule_diff_de_i != particule_i :
 
                             if np.sqrt((particule_i_coord_x-particule[particule_diff_de_i].x)**2 + (particule_i_coord_y-particule[particule_diff_de_i].y)**2) < 10 :
-                                print("distance trop faible")
-                                #return True
+                                #print("distance too low")
                                 noncollision = False
 
                     if noncollision == True :
