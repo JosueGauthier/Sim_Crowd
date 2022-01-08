@@ -299,7 +299,6 @@ class Simulation:
         #anim = animation.FuncAnimation(self.fig, self.animate,init_func=self.init, frames=1000, interval=interval, blit=True)
         self.save_or_show_animation(anim, save, filename)
     
-        #plt.show()      
 
     def __init__(self,nbparticules,afficher_trajet):
         """Initialize the simulation with n Particles.
@@ -334,7 +333,10 @@ if __name__ == '__main__':
     nparticles = 100
     raddi = 10 #raddius of particle
     styles = {'edgecolor': 'red','facecolor': 'red', 'linewidth': 0, 'fill':True }
+
+
     
+
     sim = Simulation(nparticles,afficher_trajet)
 
     sim.do_animation(save=False)
