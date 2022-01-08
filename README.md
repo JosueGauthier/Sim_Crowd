@@ -9,7 +9,7 @@ Quickstart
 
 
 
-![alt text](http://url/to/img.png)
+![alt text](https://github.com/JosueGauthier/Sim_Crowd/blob/master/_static/im2.png)
 
 
 References
