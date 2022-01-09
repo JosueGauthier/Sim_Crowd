@@ -23,7 +23,7 @@ deactivate # to exit from venv environnement
 
 ```
 
-Then you can run Simulation_N_particules.py where you can simulate a crowd, Simulation_1_particules is a test code to simulate 1 particle crowd movement.
+Then you can run Simulation_N_particules.py where you can simulate a crowd, Simulation_1_particule.py is a test code to simulate 1 particle crowd movement.
 
 An archive is available where you can find test code. 
 
