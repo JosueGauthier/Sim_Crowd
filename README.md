@@ -19,9 +19,11 @@ source venv/bin/activate
 
 pip install -r requirements.txt
 
-deactivate
+deactivate # to exit from venv environnement
 
 ```
+
+
 
 ## Example
 
