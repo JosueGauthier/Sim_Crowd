@@ -23,6 +23,10 @@ deactivate # to exit from venv environnement
 
 ```
 
+Then you can run Simulation_N_particules.py where you can simulate a crowd, Simulation_1_particules is a test code to simulate 1 particle crowd movement.
+An archive is available where you can find test code. 
+
+Finally if you want to make a recording of the matplotlib simulation, the FFmpeg software is necessary, it is in download with the code.
 
 
 ## Example
