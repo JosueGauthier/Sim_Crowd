@@ -41,3 +41,7 @@ Finally if you want to make a recording of the matplotlib simulation, the FFmpeg
 [scikit-mpe](https://github.com/espdev/scikit-mpe)- Extracting a minimal path in N-dimensional Euclidean space (on regular Cartesian grids) using the fast marching method.
 
 [scikit-fmm](https://github.com/scikit-fmm/scikit-fmm)- Python implementation of the fast marching method
+
+[FFmpeg](https://github.com/FFmpeg/FFmpeg) - Video encoder
+
+
