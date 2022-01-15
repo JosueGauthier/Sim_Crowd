@@ -123,7 +123,7 @@ class Simulation:
             
             pathCP = self.calc_chemin(speed_image,start_point,end_point)
 
-            vpart = random()
+            vpart = 0.1
             
             p = Particle(start_point[0],start_point[1],pathCP,vpart)
             particule.append(p)
@@ -237,16 +237,15 @@ class Simulation:
     def verifier_non_collision(self, particule_i):
         pass
 
-    def do_animation(self,save=False, interval=1, filename='N_particles_movie.mp4'):
+    def do_animation(self,save, interval=1, filename='N_particles_movie.mp4'):
         """Set up and carry out the animation."""
-
 
         #set up anim
         fig,particule = self.creation_plot(image_brute,start,start_type,end_point,nparticles)
         particule = self.recherche_de_collisions(particule,nparticles)
         point_list = self.moving_point(fig,particule,nparticles)
 
-        input("lancer l'animation")
+        #input("lancer l'animation")
 
 
         # Updating function, to be repeatedly called by the animation
@@ -255,6 +254,8 @@ class Simulation:
 
         
         def update(i):
+
+            print(i)
             """loop allowing the update of the animation following the incrementing of time i"""
             # obtain point coordinates
 
@@ -295,7 +296,7 @@ class Simulation:
 
             return point_list
 
-        anim = FuncAnimation(fig, update, interval=10, blit=True, repeat=True,frames=20000)
+        anim = FuncAnimation(fig, update, interval=1, blit=True, repeat=True,frames=20000)
         #anim = animation.FuncAnimation(self.fig, self.animate,init_func=self.init, frames=1000, interval=interval, blit=True)
         self.save_or_show_animation(anim, save, filename)
     
@@ -320,23 +321,22 @@ if __name__ == '__main__':
     #start = (60, 238)
 
     #si zone de depart souhaitée
-    #start_type ="zone"
-    #start=((40,600),(40,600))
+    start_type ="zone"
+    start=((40,700),(40,600))
 
     #si repartition alétoire
-    start = None
-    start_type ="alea"
+    #start = None
+    #start_type ="alea"
     
     
     end_point = (621, 728)
 
-    nparticles = 100
+    nparticles = 20
     raddi = 10 #raddius of particle
     styles = {'edgecolor': 'red','facecolor': 'red', 'linewidth': 0, 'fill':True }
 
 
-    
-
     sim = Simulation(nparticles,afficher_trajet)
-
-    sim.do_animation(save=False)
+ 
+    sim.do_animation(save=True)
+ 
